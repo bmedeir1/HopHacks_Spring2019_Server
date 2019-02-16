@@ -12,6 +12,8 @@ def hello_world():
 @app.route('/report', methods=['PUT'])
 def report():
     print(request.json)
+    type = request.json["type"]
+    print(type)
     return("success")
 
 

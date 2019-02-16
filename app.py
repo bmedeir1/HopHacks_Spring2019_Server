@@ -1,5 +1,6 @@
 from flask import Flask, request, g, url_for
 import sqlite3
+import json
 
 import requests
 
@@ -34,22 +35,33 @@ def hello_world():
     return 'Hello World!'
 
 
-@app.route('/report', methods=['PUT', 'POST'])
+@app.route('/report', methods=['PUT', 'POST', 'GET'])
 def report():
-    print(request.json)
-    type = request.json["type"]
-    date = request.json["date"]
-    time = request.json["time"]
-    latitude = request.json["latitude"]
-    longitude = request.json["longitude"]
-    report = Report(type, date, time, latitude, longitude)
-    print(report)
+    if request.method == 'PUT' or request.method =='POST':
+        print(request.json)
+        type = request.json["type"]
+        date = request.json["date"]
+        time = request.json["time"]
+        latitude = request.json["latitude"]
+        longitude = request.json["longitude"]
+        report = Report(type, date, time, latitude, longitude)
+        print(report)
 
-    get_db(1).execute("INSERT INTO REPORT VALUES (NULL, ?, ?, ?, ?, ?)",
+        get_db(1).execute("INSERT INTO REPORT VALUES (NULL, ?, ?, ?, ?, ?)",
                       (type, date, time, latitude, longitude))
-    get_db().commit()
-    get_db().close
-    return("success")
+        get_db().commit()
+        get_db().close
+        return("success")
+    elif request.method == 'GET':
+        reports = ""
+        for col in get_db().execute("SELECT * FROM REPORT"):
+            current_report = Report(col[1], col[2], col[3], col[4], col[5])
+            json_obj = json.dumps(current_report.__dict__)
+            reports += json_obj + '\n'
+        print(reports)
+        return(reports)
+    else:
+        return "nothing"
 
 
 if __name__ == '__main__':

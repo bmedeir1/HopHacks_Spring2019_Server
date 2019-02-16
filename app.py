@@ -9,10 +9,11 @@ app = Flask(__name__)
 DATABASE = "report"
 
 class Report:
-    def __init__(self, type, date, time, latitude, longitude):
+    def __init__(self, type, date, time, description, latitude, longitude):
         self.type = type
         self.date = date
         self.time = time
+        self.description = description
         self.latitude = latitude
         self.longitude = longitude
 
@@ -24,7 +25,7 @@ def get_db(param=0):
         conn = sqlite3.connect(DATABASE)
         cur = conn.cursor()
         cur.execute("CREATE TABLE IF NOT EXISTS REPORT(Id INTEGER PRIMARY KEY AUTOINCREMENT, type VARCHAR, "
-                    "date VARCHAR, time VARCHAR, latitude VARCHAR, longitude VARCHAR)")
+                    "date VARCHAR, time VARCHAR, description VARCHAR, latitude VARCHAR, longitude VARCHAR)")
         conn.commit()
         conn.close()
     return db
@@ -42,20 +43,21 @@ def report():
         type = request.json["type"]
         date = request.json["date"]
         time = request.json["time"]
+        description = request.json["description"]
         latitude = request.json["latitude"]
         longitude = request.json["longitude"]
-        report = Report(type, date, time, latitude, longitude)
+        report = Report(type, date, time, description, latitude, longitude)
         print(report)
 
-        get_db(1).execute("INSERT INTO REPORT VALUES (NULL, ?, ?, ?, ?, ?)",
-                      (type, date, time, latitude, longitude))
+        get_db(1).execute("INSERT INTO REPORT VALUES (NULL, ?, ?, ?, ?, ?, ?)",
+                          (type, date, time, description, latitude, longitude))
         get_db().commit()
         get_db().close
         return("success")
     elif request.method == 'GET':
         reports = ""
         for col in get_db().execute("SELECT * FROM REPORT"):
-            current_report = Report(col[1], col[2], col[3], col[4], col[5])
+            current_report = Report(col[1], col[2], col[3], col[4], col[5], col[6])
             json_obj = json.dumps(current_report.__dict__)
             reports += json_obj + '\n'
         print(reports)

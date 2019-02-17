@@ -55,13 +55,14 @@ def report():
         get_db().close
         return("success")
     elif request.method == 'GET':
+        print("here")
         reports = ""
         for col in get_db().execute("SELECT * FROM REPORT"):
             current_report = Report(col[1], col[2], col[3], col[4], col[5], col[6])
             json_obj = json.dumps(current_report.__dict__)
             reports += json_obj + '\n'
         print(reports)
-        return(reports)
+        return reports
     else:
         return "nothing"
 

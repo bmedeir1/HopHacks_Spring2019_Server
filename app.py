@@ -38,7 +38,8 @@ def hello_world():
 
 @app.route('/report', methods=['PUT', 'POST', 'GET'])
 def report():
-    if request.method == 'PUT' or request.method =='POST':
+    if request.method == 'POST' or request.method == 'PUT':
+        print("putting/posting")
         print(request.json)
         type = request.json["type"]
         date = request.json["date"]
@@ -54,6 +55,7 @@ def report():
         get_db().commit()
         get_db().close
         return("success")
+
     elif request.method == 'GET':
         print("here")
         reports = ""

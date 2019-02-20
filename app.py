@@ -2,7 +2,6 @@ from flask import Flask, request, g, url_for
 import sqlite3
 import json
 
-import requests
 
 app = Flask(__name__)
 

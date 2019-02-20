@@ -30,7 +30,7 @@ def get_db(param=0):
     return db
 
 
-@app.route('/', methods=['GET, ''PUT,' 'POST'])
+@app.route('/', methods=['GET', 'PUT', 'POST'])
 def hello_world():
     return 'Hello World!'
 
